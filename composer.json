@@ -1,0 +1,14 @@
+{
+  "require": {
+    "php": "^8.3",
+    "symfony/http-foundation": "^7.0",
+    "symfony/security-csrf": "^7.0",
+    "symfony/validator": "^7.0",
+    "twig/twig": "^3.0"
+  },
+  "config": {
+    "platform": {
+      "php": "8.3.35"
+    }
+  }
+}

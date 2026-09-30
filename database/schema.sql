@@ -1,0 +1,23 @@
+CREATE TABLE products (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    sku VARCHAR(64) NOT NULL UNIQUE,
+    name VARCHAR(160) NOT NULL,
+    price DECIMAL(10,2) NOT NULL DEFAULT 0,
+    quantity INT NOT NULL DEFAULT 0,
+    reorder_level INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT chk_price CHECK (price >= 0),
+    CONSTRAINT chk_quantity CHECK (quantity >= 0),
+    CONSTRAINT chk_reorder CHECK (reorder_level >= 0)
+);
+
+CREATE TABLE stock_movements (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT UNSIGNED NOT NULL,
+    change_amount INT NOT NULL,
+    note VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT,
+    CONSTRAINT chk_nonzero_change CHECK (change_amount <> 0)
+);

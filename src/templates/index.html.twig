@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Stockroom</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<main>
+  <header><h1>Stockroom</h1><div class="muted">Products and stock at a glance</div></header>
+  {% if flash %}<div class="alert">{{ flash }}</div>{% endif %}
+  {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+  <div class="grid">
+    <div>
+      <section class="card">
+        <h2>{{ editing ? 'Edit product' : 'Add product' }}</h2>
+        <form method="post" action="/products">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="hidden" name="id" value="{{ editing.id|default('') }}">
+          <label for="sku">SKU</label><input id="sku" name="sku" maxlength="64" required value="{{ editing.sku|default('') }}">
+          <label for="name">Name</label><input id="name" name="name" maxlength="160" required value="{{ editing.name|default('') }}">
+          <label for="price">Unit price</label><input id="price" name="price" type="number" min="0" max="99999999.99" step="0.01" required value="{{ editing.price|default('0.00') }}">
+          <label for="reorder">Reorder level</label><input id="reorder" name="reorder_level" type="number" min="0" step="1" required value="{{ editing.reorder_level|default('0') }}">
+          <button type="submit">Save product</button>
+          {% if editing %}<a class="button" href="/">Cancel</a>{% endif %}
+        </form>
+      </section>
+      <section class="card">
+        <h2>Recent stock changes</h2>
+        {% if movements %}
+          <div class="scroll"><table>
+            <thead><tr><th>Product</th><th>Change</th><th>Note</th></tr></thead>
+            <tbody>
+              {% for movement in movements %}
+                <tr><td>{{ movement.sku }}</td><td>{{ movement.change_amount > 0 ? '+' : '' }}{{ movement.change_amount }}</td><td>{{ movement.note }}<br><small>{{ movement.created_at }}</small></td></tr>
+              {% endfor %}
+            </tbody>
+          </table></div>
+        {% else %}<p class="muted">No changes yet.</p>{% endif %}
+      </section>
+    </div>
+    <section class="card">
+      <h2>Products ({{ products|length }})</h2>
+      {% if products %}
+        <div class="scroll"><table>
+          <thead><tr><th>SKU / Name</th><th>Price</th><th>On hand</th><th>Stock change</th></tr></thead>
+          <tbody>
+            {% for product in products %}
+              <tr>
+                <td><strong>{{ product.sku }}</strong><br>{{ product.name }}<br><a href="/?edit={{ product.id }}">Edit</a></td>
+                <td>${{ product.price|number_format(2, '.', ',') }}</td>
+                <td class="{{ product.quantity <= product.reorder_level ? 'low' : '' }}">{{ product.quantity }}{% if product.quantity <= product.reorder_level %}<br><small>Low stock</small>{% endif %}</td>
+                <td>
+                  <form method="post" action="/stock">
+                    <input type="hidden" name="csrf" value="{{ csrf }}">
+                    <input type="hidden" name="id" value="{{ product.id }}">
+                    <div class="inline">
+                      <input aria-label="Stock change for {{ product.sku }}" name="change_amount" type="number" step="1" required placeholder="± qty">
+                      <input aria-label="Reason for {{ product.sku }}" name="note" maxlength="255" required placeholder="Reason">
+                      <button type="submit">Apply</button>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+      {% else %}<p class="muted">Add your first product to begin.</p>{% endif %}
+    </section>
+  </div>
+</main>
+</body>
+</html>
