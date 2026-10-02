@@ -11,6 +11,7 @@ COPY src/styles/ ./src/styles/
 RUN npm run build:css
 
 FROM php:8.3-apache
+RUN groupadd --gid 1000 developer && useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash developer
 RUN docker-php-ext-install pdo_mysql
 RUN printf 'display_errors=Off\nlog_errors=On\n' > /usr/local/etc/php/conf.d/app.ini
 ENV APACHE_DOCUMENT_ROOT=/var/www/app/public
