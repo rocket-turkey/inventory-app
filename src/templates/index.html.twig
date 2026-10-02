@@ -11,10 +11,12 @@
   <header><h1>Stockroom</h1><div class="muted">Products and stock at a glance</div></header>
   {% if flash %}<div class="alert">{{ flash }}</div>{% endif %}
   {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+
   <div class="grid">
     <div>
       <section class="card">
         <h2>{{ editing ? 'Edit product' : 'Add product' }}</h2>
+
         <form method="post" action="/products">
           <input type="hidden" name="csrf" value="{{ csrf }}">
           <input type="hidden" name="id" value="{{ editing.id|default('') }}">
@@ -26,8 +28,10 @@
           {% if editing %}<a class="button" href="/">Cancel</a>{% endif %}
         </form>
       </section>
+
       <section class="card">
         <h2>Recent stock changes</h2>
+
         {% if movements %}
           <div class="scroll"><table>
             <thead><tr><th>Product</th><th>Change</th><th>Note</th></tr></thead>
@@ -40,8 +44,10 @@
         {% else %}<p class="muted">No changes yet.</p>{% endif %}
       </section>
     </div>
+
     <section class="card">
       <h2>Products ({{ products|length }})</h2>
+      
       {% if products %}
         <div class="scroll"><table>
           <thead><tr><th>SKU / Name</th><th>Price</th><th>On hand</th><th>Stock change</th></tr></thead>
@@ -55,6 +61,7 @@
                   <form method="post" action="/stock">
                     <input type="hidden" name="csrf" value="{{ csrf }}">
                     <input type="hidden" name="id" value="{{ product.id }}">
+                    
                     <div class="inline">
                       <input aria-label="Stock change for {{ product.sku }}" name="change_amount" type="number" step="1" required placeholder="± qty">
                       <input aria-label="Reason for {{ product.sku }}" name="note" maxlength="255" required placeholder="Reason">
@@ -66,6 +73,7 @@
             {% endfor %}
           </tbody>
         </table></div>
+
       {% else %}<p class="muted">Add your first product to begin.</p>{% endif %}
     </section>
   </div>

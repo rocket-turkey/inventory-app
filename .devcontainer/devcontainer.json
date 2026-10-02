@@ -1,0 +1,20 @@
+{
+  "name": "Stockroom PHP",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "context": ".."
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "php.validate.enable": true,
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "intelephense.environment.includePaths": [
+          "/var/www/app/vendor"
+        ]
+      }
+    }
+  }
+}

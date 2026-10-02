@@ -13,7 +13,9 @@ final class ProductRepository
     public function find(int $id): ?array
     {
         $statement = $this->db->prepare('SELECT * FROM products WHERE id = ?');
+
         $statement->execute([$id]);
+        
         return $statement->fetch() ?: null;
     }
 
@@ -22,6 +24,7 @@ final class ProductRepository
         $statement = $this->db->prepare(
             'INSERT INTO products (sku, name, price, reorder_level) VALUES (?, ?, ?, ?)'
         );
+
         $statement->execute([$sku, $name, $price, $reorderLevel]);
     }
 
@@ -30,6 +33,7 @@ final class ProductRepository
         $statement = $this->db->prepare(
             'UPDATE products SET sku = ?, name = ?, price = ?, reorder_level = ? WHERE id = ?'
         );
+
         $statement->execute([$sku, $name, $price, $reorderLevel, $id]);
     }
 
@@ -38,7 +42,9 @@ final class ProductRepository
         $statement = $this->db->prepare(
             'UPDATE products SET quantity = quantity + ? WHERE id = ? AND quantity + ? >= 0'
         );
+
         $statement->execute([$change, $id, $change]);
+
         return $statement->rowCount() === 1;
     }
 }

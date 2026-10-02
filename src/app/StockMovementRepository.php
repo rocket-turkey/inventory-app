@@ -12,6 +12,7 @@ final class StockMovementRepository
         );
         $statement->bindValue(1, $limit, PDO::PARAM_INT);
         $statement->execute();
+        
         return $statement->fetchAll();
     }
 
@@ -20,6 +21,7 @@ final class StockMovementRepository
         $statement = $this->db->prepare(
             'INSERT INTO stock_movements (product_id, change_amount, note) VALUES (?, ?, ?)'
         );
+
         $statement->execute([$productId, $change, $note]);
     }
 }

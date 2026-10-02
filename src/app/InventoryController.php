@@ -22,8 +22,10 @@ final class InventoryController
     public function index(Request $request): Response
     {
         $editing = null;
+        
         if ($request->query->has('edit')) {
             $id = filter_var($request->query->get('edit'), FILTER_VALIDATE_INT);
+
             if ($id && $id > 0) {
                 $editing = $this->products->find($id);
             }
@@ -37,7 +39,9 @@ final class InventoryController
             'flash' => $_SESSION['flash'] ?? null,
             'error' => $_SESSION['error'] ?? null,
         ]);
+        
         unset($_SESSION['flash'], $_SESSION['error']);
+
         return new Response($html);
     }
 
@@ -46,11 +50,13 @@ final class InventoryController
         return $this->handleWrite($request, function () use ($request): string {
             [$sku, $name, $price, $reorder] = $this->validator->product($request->request->all());
             $id = filter_var($request->request->get('id'), FILTER_VALIDATE_INT);
+            
             if ($id && $id > 0) {
                 $this->products->update($id, $sku, $name, $price, $reorder);
             } else {
                 $this->products->create($sku, $name, $price, $reorder);
             }
+
             return 'Product saved.';
         });
     }
@@ -60,6 +66,7 @@ final class InventoryController
         return $this->handleWrite($request, function () use ($request): string {
             [$id, $change, $note] = $this->validator->stock($request->request->all());
             $this->inventory->adjustStock($id, $change, $note);
+
             return 'Stock updated.';
         });
     }
@@ -69,6 +76,7 @@ final class InventoryController
         if (!$this->csrf->isTokenValid(new CsrfToken('inventory', (string)$request->request->get('csrf', '')))) {
             return new Response('Invalid request token. Refresh the page and try again.', 403);
         }
+
         try {
             $_SESSION['flash'] = $action();
         } catch (PDOException $error) {
@@ -77,6 +85,7 @@ final class InventoryController
         } catch (InvalidArgumentException $error) {
             $_SESSION['error'] = $error->getMessage();
         }
+
         return new RedirectResponse('/');
     }
 }
