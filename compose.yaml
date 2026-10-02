@@ -12,6 +12,7 @@ services:
       db:
         condition: service_healthy
     volumes:
+      - .:/workspace
       - ./src/public/index.php:/var/www/app/public/index.php:ro
       - ./src/app:/var/www/app/app:ro
       - ./src/templates:/var/www/app/templates:ro

@@ -1,11 +1,14 @@
 {
-  "name": "Stockroom PHP",
-  "build": {
-    "dockerfile": "../Dockerfile",
-    "context": ".."
-  },
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "name": "Stockroom PHP and MySQL",
+  "dockerComposeFile": "../compose.yaml",
+  "service": "web",
   "workspaceFolder": "/workspace",
+  "forwardPorts": [80],
+  "portsAttributes": {
+    "80": {
+      "label": "Stockroom"
+    }
+  },
   "customizations": {
     "vscode": {
       "settings": {
