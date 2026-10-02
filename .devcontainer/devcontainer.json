@@ -11,6 +11,7 @@
   },
   "customizations": {
     "vscode": {
+      "extensions": ["bmewburn.vscode-intelephense-client"],
       "settings": {
         "php.validate.enable": true,
         "php.validate.executablePath": "/usr/local/bin/php",
